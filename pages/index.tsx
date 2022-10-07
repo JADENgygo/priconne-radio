@@ -1,5 +1,5 @@
 import type { NextPage } from 'next'
-import Image from 'next/image'
+import Image from 'next/future/image'
 import Twitter from 'twit';
 import { addDoc, getFirestore, collection, getDocs, setDoc, doc } from "firebase/firestore/lite";
 import { initializeApp } from "firebase/app";
@@ -11,17 +11,32 @@ import { Tweet } from 'react-twitter-widgets';
 
 const Home: NextPage<{ids: string[]}> = ({ ids }: { ids: string[] }) => {
   const [loaded, setLoaded] = useState(false);
+  const [theme, setTheme] = useState<"light" | "dark">("light");
   const router = useRouter();
   const page = router.query.page ? parseInt(router.query.page as string) : 0;
   const min_ = page - (page % 3);
+
   useEffect(() => {
     const f = () => setLoaded(false);
     router.events.on("routeChangeStart", f);
     return () => router.events.off("routeChangeStart", f);
   }, []);
 
+  useEffect(() => {
+    const theme = localStorage.getItem("theme");
+    setTheme(theme === "dark" ? "dark" : "light");
+  }, []);
+
+  const changeTheme = () => {
+    document.querySelector('html')?.classList.toggle('dark');
+    const theme = localStorage.getItem('theme');
+    localStorage.setItem("theme", theme === "dark" ? "light" : "dark");
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
+
   return (
-    <div className="container pt-3">
+    <div className="container">
+      <div className="text-end pt-1 mb-3"><span className="link" onClick={changeTheme}>ダークモード: { theme === "light" ? "オフ" : "オン" }</span></div>
       <div className="text-center fs-1 mb-3">プリコネラジオファン</div>
       <p>プリコネはプレイしているけどプリコネラジオは聴いたことがない方も一度聴いてみませんか？</p>
       <p>お便りを送るとアクリルスタンドが貰えるチャンスもありますよ！</p>
@@ -66,7 +81,7 @@ const Home: NextPage<{ids: string[]}> = ({ ids }: { ids: string[] }) => {
       {
         ids.slice(page * 3, page * 3 + 3).map(e => {
           return (
-            <div key={e} className="col-12 col-sm-12 col-md-6 col-lg-4">
+            <div key={e} className="col-12 col-sm-12 col-md-6 col-lg-4 keep">
               <Tweet tweetId={e} options={{"align": "center"}} onLoad={() => setLoaded(true)} />
             </div>
           );
@@ -78,18 +93,18 @@ const Home: NextPage<{ids: string[]}> = ({ ids }: { ids: string[] }) => {
         <div>(横: 約13 cm, 奥行: 約9 cm, 高さ: 約14 cm)</div>
       </div>
       <div className="text-center">
-        <Image className="mb-3" src="/stand.jpeg" width={1536 / 4} height={2048 / 4} alt="アクリルスタンド"/>
+        <Image className="img-fluid mb-3" src="/stand.webp" width={1536 / 4} height={2048 / 4} alt="アクリルスタンド"/>
       </div>
-      <div>リンク集</div>
+      <div className="mb-3">リンク集</div>
       <ul className="list-group list-group-flush mb-3">
         <li className="list-group-item">
-          <a href="https://hibiki-radio.jp/description/priconne_re/detail">響 - HiBiKi Radio Station - | プリコネチャンネルRe:Dive</a>
+          <a className="link" href="https://hibiki-radio.jp/description/priconne_re/detail">響 - HiBiKi Radio Station - | プリコネチャンネルRe:Dive</a>
         </li>
         <li className="list-group-item">
-          <a href="https://www.youtube.com/playlist?list=PLPq8soy4FhfaXYsSg8TnpOnwKoOtEmj7d">プリコネチャンネルRe:Dive - YouTube</a>
+          <a className="link" href="https://www.youtube.com/playlist?list=PLPq8soy4FhfaXYsSg8TnpOnwKoOtEmj7d">プリコネチャンネルRe:Dive - YouTube</a>
         </li>
         <li className='list-group-item'>
-          <a href='https://twitter.com/search?q=from%3Apriconne_redive%20url%3Ahibiki-radio.jp&f=live'>プリコネ公式ツイッターのラジオツイート検索結果</a>
+          <a className="link" href='https://twitter.com/search?q=from%3Apriconne_redive%20url%3Ahibiki-radio.jp&f=live'>プリコネ公式ツイッターのラジオツイート検索結果</a>
         </li>
       </ul>
     </div>

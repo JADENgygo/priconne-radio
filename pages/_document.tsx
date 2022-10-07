@@ -6,18 +6,20 @@ export default function Document() {
       <Head>
         <meta charSet="utf-8" />
         <meta name="description" content="プリコネチャンネルRe:Diveのファンサイト" />
-        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@JADENgygo" />
-        <meta property="og:url" content="https://priconne-radio.vercel.app" />
+        <meta property="og:type" content="website" />
         <meta property="og:title" content="プリコネラジオファン" />
         <meta property="og:description" content="プリコネチャンネルRe:Diveのファンサイト" />
+        <meta property="og:url" content="https://priconne-radio.vercel.app" />
         <meta
           property="og:image"
-          content="https://priconne-radio.vercel.app/peko.png"
+          content="https://priconne-radio.vercel.app/card.webp"
         />
         <link rel="icon" href="/peko.png" />
       </Head>
       <body>
+        <script src="/script.js" async />
         <Main />
         <NextScript />
       </body>

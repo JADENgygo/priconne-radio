@@ -25,16 +25,22 @@ const Home: NextPage<{ids: string[]}> = ({ ids }: { ids: string[] }) => {
 
   useEffect(() => {
     const cookie = parseCookies();
+    if (cookie.theme === "dark") {
+      document.documentElement.classList.add("dark");
+      document.body.classList.add("dark");
+    }
     setTheme(cookie.theme === "dark" ? "dark" : "light");
   }, []);
 
   const changeTheme = () => {
+    document.documentElement.classList.toggle("dark");
+    document.body.classList.toggle("dark");
     const cookie = parseCookies();
     setCookie(null, "theme", cookie.theme === "dark" ? "light" : "dark", {
       maxAge: 60 * 60 * 24 * 30 * 12 * 1,
       path: "/"
     });
-    router.reload();
+    setTheme(cookie.theme === "dark" ? "light" : "dark");
   };
 
   return (

@@ -8,10 +8,11 @@ import Link from "next/link"
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { Tweet } from 'react-twitter-widgets';
+import { parseCookies, setCookie } from "nookies";
 
 const Home: NextPage<{ids: string[]}> = ({ ids }: { ids: string[] }) => {
   const [loaded, setLoaded] = useState(false);
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [theme, setTheme] = useState<"" | "light" | "dark">("");
   const router = useRouter();
   const page = router.query.page ? parseInt(router.query.page as string) : 0;
   const min_ = page - (page % 3);
@@ -23,20 +24,24 @@ const Home: NextPage<{ids: string[]}> = ({ ids }: { ids: string[] }) => {
   }, []);
 
   useEffect(() => {
-    const theme = localStorage.getItem("theme");
-    setTheme(theme === "dark" ? "dark" : "light");
+    const cookie = parseCookies();
+    setTheme(cookie.theme === "dark" ? "dark" : "light");
   }, []);
 
   const changeTheme = () => {
-    document.querySelector('html')?.classList.toggle('dark');
-    const theme = localStorage.getItem('theme');
-    localStorage.setItem("theme", theme === "dark" ? "light" : "dark");
-    setTheme(theme === "dark" ? "light" : "dark");
+    const cookie = parseCookies();
+    setCookie(null, "theme", cookie.theme === "dark" ? "light" : "dark", {
+      maxAge: 60 * 60 * 24 * 30 * 12 * 1,
+      path: "/"
+    });
+    router.reload();
   };
 
   return (
     <div className="container">
-      <div className="text-end pt-1 mb-3"><span className="link" onClick={changeTheme}>ダークモード: { theme === "light" ? "オフ" : "オン" }</span></div>
+      <div className={`text-end pt-1 mb-3 ${theme === "" ? "invisible" : "visible"}`}>
+        <span className="link" onClick={changeTheme}>ダークモード: { theme === "light" ? "オフ" : "オン" }</span>
+      </div>
       <div className="text-center fs-1 mb-3">プリコネラジオファン</div>
       <p>プリコネはプレイしているけどプリコネラジオは聴いたことがない方も一度聴いてみませんか？</p>
       <p>お便りを送るとアクリルスタンドが貰えるチャンスもありますよ！</p>

@@ -27,13 +27,23 @@ a, a:hover {
 }
 
 .dark {
-  filter: invert(1) hue-rotate(180deg);
+  background-color: $dark;
+  color: $light;
 
-  body {
-    background-color: $gray-300;
+  $list-group-border-color: $black;
+  @import "../node_modules/bootstrap/scss/mixins";
+  @import "../node_modules/bootstrap/scss/list-group";
+
+  li {
+    background-color: $dark !important;
   }
 
-  img, .keep {
-    filter: invert(1) hue-rotate(180deg);
+  a, a:hover {
+    color: $light;
+  }
+
+  nav a, nav a:hover {
+    background-color: $dark !important;
+    color: $light;
   }
 }

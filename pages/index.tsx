@@ -51,6 +51,7 @@ const Home: NextPage<{ids: string[]}> = ({ ids }: { ids: string[] }) => {
       <div className="text-center fs-1 mb-3">プリコネラジオファン</div>
       <p>プリコネはプレイしているけどプリコネラジオは聴いたことがない方も一度聴いてみませんか？</p>
       <p>お便りを送るとアクリルスタンドが貰えるチャンスもありますよ！</p>
+      <div className="alert alert-primary" role="alert">Twitter API有料化のため更新停止中</div>
       <div className="text-center mb-3">プリコネラジオのツイート集</div>
       <nav aria-label="Page navigation" id="pagination">
         <ul className="pagination justify-content-center">
@@ -123,6 +124,7 @@ const Home: NextPage<{ids: string[]}> = ({ ids }: { ids: string[] }) => {
 }
 
 export async function getStaticProps() {
+  /*
   const twitter = new Twitter({
     consumer_key: process.env.CONSUMER_KEY as string,
     consumer_secret: process.env.CONSUMER_SECRET as string,
@@ -138,6 +140,7 @@ export async function getStaticProps() {
   };
   const data = await twitter.get('search/tweets', params as Twitter.Params);
   const newIds = ((data.data as any).statuses as any[]).map(e => e.id_str).reverse();
+  */
 
   const firebaseConfig = {
     apiKey: process.env.API_KEY,
@@ -150,10 +153,12 @@ export async function getStaticProps() {
   const app = initializeApp(firebaseConfig);
 
   const db = getFirestore(app);
+  /*
   for (let e of newIds) {
     const d = doc(db, "urls", e);
     await setDoc(d, {url: e});
   }
+  */
 
   const col = collection(db, 'urls');
   const snapshot = await getDocs(col);
